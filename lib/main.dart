@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+import 'package:citi_smart/pages/edu_page.dart';
+>>>>>>> 86b508b (progress with educationsl page)
 import 'package:flutter/material.dart';
 
 void main() {
@@ -7,11 +11,15 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+<<<<<<< HEAD
   // This widget is the root of your application.
+=======
+>>>>>>> 86b508b (progress with educationsl page)
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+<<<<<<< HEAD
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -32,6 +40,21 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
+=======
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primaryColor: Colors.green[700],
+        scaffoldBackgroundColor: Colors.green[100],
+        colorScheme:
+            ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 16, 100, 23)),
+        useMaterial3: true,
+      ),
+      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      routes: {
+        '/educational': (context) => const EducationalPage(),
+        // Add other routes here if needed
+      },
+>>>>>>> 86b508b (progress with educationsl page)
     );
   }
 }
@@ -39,6 +62,7 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
+<<<<<<< HEAD
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
   // how it looks.
@@ -48,6 +72,8 @@ class MyHomePage extends StatefulWidget {
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
 
+=======
+>>>>>>> 86b508b (progress with educationsl page)
   final String title;
 
   @override
@@ -55,6 +81,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+<<<<<<< HEAD
   int _counter = 0;
 
   void _incrementCounter() {
@@ -120,6 +147,23 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+=======
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.pushNamed(context, '/educational');
+          },
+          child: const Text('Go to Educational Page'),
+        ),
+      ),
+>>>>>>> 86b508b (progress with educationsl page)
     );
   }
 }
