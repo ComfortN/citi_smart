@@ -12,23 +12,8 @@ void main() async {
    options: DefaultFirebaseOptions.currentPlatform,
  );
 
-// WidgetsFlutterBinding.ensureInitialized();
-// await Firebase.initializeApp();
-
-// Ideal time to initialize
-// FirebaseAuth.instance
-//   .authStateChanges()
-//   .listen((User? user) {
-//     if (user == null) {
-//       print('User is currently signed out!');
-//     } else {
-//       print('User is signed in!');
-//     }
-//   });;
   runApp(const MyApp());
 }
-// WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp();
 
 
 
