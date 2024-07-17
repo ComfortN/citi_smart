@@ -11,7 +11,7 @@ class Body extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Image.asset(
-              'assets/images/Green Simple Eco Energy Logo.png'), // Make sure to add your logo image in assets
+              'assets/images/Green Simple Eco Energy Logo1.png'), // Make sure to add your logo image in assets
           SizedBox(height: 50),
           ElevatedButton(
             onPressed: () {

@@ -1,11 +1,36 @@
+import 'package:citi_smart/firebase_options.dart';
 import 'package:citi_smart/pages/landing.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:citi_smart/constants.dart';
+import 'package:firebase_core/firebase_core.dart';
+// import 'firebase_options.dart';
 
 
-void main() {
+void main() async {
+  await Firebase.initializeApp(
+   options: DefaultFirebaseOptions.currentPlatform,
+ );
+
+// WidgetsFlutterBinding.ensureInitialized();
+// await Firebase.initializeApp();
+
+// Ideal time to initialize
+// FirebaseAuth.instance
+//   .authStateChanges()
+//   .listen((User? user) {
+//     if (user == null) {
+//       print('User is currently signed out!');
+//     } else {
+//       print('User is signed in!');
+//     }
+//   });;
   runApp(const MyApp());
 }
+// WidgetsFlutterBinding.ensureInitialized();
+  // await Firebase.initializeApp();
+
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
