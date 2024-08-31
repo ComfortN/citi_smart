@@ -27,10 +27,10 @@ void main() async {
 // import 'firebase_options.dart';
 
 
-void main() async {
-  await Firebase.initializeApp(
-   options: DefaultFirebaseOptions.currentPlatform,
- );
+// void main() async {
+//   await Firebase.initializeApp(
+//    options: DefaultFirebaseOptions.currentPlatform,
+//  );
 
 
   runApp(const MyApp());
@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.green,
         useMaterial3: true,
       ),
-      home: const HomePage(),
+      home: const Welcome(),
       routes: {
         '/edu': (context) => EducationalPage(),
         '/donation': (context) => DonationPage(),
@@ -65,12 +65,12 @@ class MyApp extends StatelessWidget {
             ),
       },
 
-      title: 'Citi Smart',
-      theme: ThemeData(
-        primaryColor: kPrimaryColor,
-        scaffoldBackgroundColor: const Color.fromARGB(255, 32, 73, 34),
-      ),
-      home: const Welcome(),
+      // title: 'Citi Smart',
+      // theme: ThemeData(
+      //   primaryColor: kPrimaryColor,
+      //   scaffoldBackgroundColor: const Color.fromARGB(255, 32, 73, 34),
+      // ),
+      // home: const Welcome(),
 
     );
   }

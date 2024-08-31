@@ -2,7 +2,7 @@ import 'package:citi_smart/constants.dart';
 
 import 'package:citi_smart/pages/home.dart';
 
-import 'package:citi_smart/home.dart';
+// import 'package:citi_smart/home.dart';
 
 import 'package:citi_smart/pages/login.dart';
 import 'package:citi_smart/pages/login/have_account.dart';
