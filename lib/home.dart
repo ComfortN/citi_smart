@@ -16,10 +16,7 @@ class HomePage extends StatelessWidget {
             Container(
               height: 200,
               color: Colors.lightGreen,
-              child: const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
+
                     Icon(Icons.eco, size: 80, color: Colors.white),
                     SizedBox(height: 10),
                     Text(
@@ -266,4 +263,3 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-}
