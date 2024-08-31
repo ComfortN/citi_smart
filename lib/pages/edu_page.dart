@@ -1,14 +1,9 @@
-<<<<<<< HEAD
-import 'package:citi_smart/main.dart';
-=======
->>>>>>> 86b508b (progress with educationsl page)
+import 'package:citi_smart/pages/home.dart';
 import 'package:flutter/material.dart';
 
 void main() {
   runApp(const MyApp());
 }
-<<<<<<< HEAD
-=======
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -19,24 +14,30 @@ class MyApp extends StatelessWidget {
       title: 'Citi Smart',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blueGrey, // Base color
-        hintColor: Colors.green[700], // Complementary color
-        primaryColor:
-            const Color.fromARGB(255, 16, 100, 23), // Dark shade for depth
-        scaffoldBackgroundColor:
-            const Color(0xFFE8F5E9), // Light background for contrast
+        primarySwatch: Colors.green, // Set primary color to green
+        hintColor: Colors.blue, // Set accent color to blue
+        scaffoldBackgroundColor: Colors.white, // Light background for contrast
         textTheme: const TextTheme(
-          headline1: TextStyle(
-              fontSize: 32.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-              fontFamily: 'Roboto'),
-          bodyText1: TextStyle(
-              fontSize: 18.0, color: Colors.black54, fontFamily: 'Roboto'),
+          titleLarge: TextStyle(
+            fontSize: 32.0,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+            fontFamily: 'Roboto',
+          ),
+          bodyLarge: TextStyle(
+            fontSize: 18.0,
+            color: Colors.black54,
+            fontFamily: 'Roboto',
+          ),
         ),
-        buttonTheme: const ButtonThemeData(
-          buttonColor: Color.fromARGB(255, 16, 100, 23),
-          textTheme: ButtonTextTheme.primary,
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.blue, // Use blue for buttons
+            padding:
+                const EdgeInsets.symmetric(horizontal: 30.0, vertical: 15.0),
+            textStyle: const TextStyle(fontSize: 18.0),
+          ),
         ),
       ),
       home: const MyHomePage(title: 'Citi Smart Home'),
@@ -60,9 +61,8 @@ class MyHomePage extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            primary:
-                Theme.of(context).primaryColor, // Use primary color for button
-            onPrimary: Colors.white,
+            foregroundColor: Colors.white,
+            backgroundColor: Theme.of(context).primaryColor,
             padding:
                 const EdgeInsets.symmetric(horizontal: 30.0, vertical: 15.0),
             textStyle: const TextStyle(fontSize: 18.0),
@@ -81,14 +81,14 @@ class MyHomePage extends StatelessWidget {
 }
 
 class EducationalPage extends StatelessWidget {
-  const EducationalPage({super.key});
+  const EducationalPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Educational Page'),
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Theme.of(context).primaryColor, // Blue AppBar
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -98,7 +98,7 @@ class EducationalPage extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Colors.green[700],
                 borderRadius: BorderRadius.circular(8.0),
                 boxShadow: const [
                   BoxShadow(
@@ -119,7 +119,7 @@ class EducationalPage extends StatelessWidget {
                   ),
                   SizedBox(height: 10.0),
                   Text(
-                    'Keeping the community clean is essential for maintaining a healthy and safe environment. Proper waste disposal, recycling, and reducing litter can help prevent pollution, protect wildlife, and enhance the quality of life for everyone.',
+                    'Imagine a community where parks sparkle,streets are litter-free, and wildlife thrives. This vision can become reality with your help! Our app empowers you to take action and make a positive impact on your environment. By learning about proper waste disposal, recycling, and reducing litter, you will contribute to a cleaner, healthier community. The app provides educational resources, connects you to local clean-up events, and helps you find convenient recycling locations. Together, let us build a vibrant future where environmental health and a safe community go hand-in-hand. Keeping the community clean is essential for maintaining a healthy anrevent pollution, protect wildlife, and enhance the quality of life for everyone.',
                     style: TextStyle(fontSize: 18.0),
                   ),
                 ],
@@ -140,7 +140,7 @@ class EducationalPage extends StatelessWidget {
                 ],
               ),
               child: const Text(
-                'Fun Fact: Recycling one ton of paper can save 17 trees and 26 500 litres of water!',
+                'Fun Fact: Did you know that a single banana peel can take up to a year to decompose in a landfill!  However, by composting food scraps like banana peels, you can turn them into nutrient-rich soil in a matter of weeks.Using the app,you can learn more about composting and other ways to reduce waste!',
                 style: TextStyle(
                   fontSize: 18.0,
                   fontStyle: FontStyle.italic,
@@ -149,17 +149,18 @@ class EducationalPage extends StatelessWidget {
             ),
             const SizedBox(height: 20.0),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 30.0, vertical: 15.0),
-                textStyle: const TextStyle(fontSize: 18.0),
-              ),
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => QuizScreen()),
                 );
               },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 5.0, vertical: 15.0),
+                textStyle: const TextStyle(fontSize: 18.0),
+              ),
               child: const Text('Start Quiz'),
             ),
           ],
@@ -395,10 +396,20 @@ class ResultScreen extends StatelessWidget {
               style:
                   const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
             ),
+            const SizedBox(height: 20.0),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage()),
+                  (route) => false, 
+                );
+              },
+              child: const Text('Back to Homepage'),
+            ),
           ],
         ),
       ),
     );
   }
 }
->>>>>>> 86b508b (progress with educationsl page)

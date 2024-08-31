@@ -13,8 +13,8 @@ class _DonationPageState extends State<DonationPage> {
   final TextEditingController _contactController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   String? _donationType;
-
   Future<void> _submitDonation() async {
+    print('Submit donation button clicked'); // Debug log
     final String name = _nameController.text;
     final String contact = _contactController.text;
     final String amount = _amountController.text;
@@ -38,14 +38,16 @@ class _DonationPageState extends State<DonationPage> {
     }
 
     try {
+      print('Attempting to add donation to Firestore');
       await FirebaseFirestore.instance.collection('donations').add({
         'name': name,
         'contact': contact,
-        'amount': double.parse(amount), 
-        'donationType': _donationType, 
+        'amount': double.parse(amount),
+        'donationType': _donationType,
         'timestamp': FieldValue.serverTimestamp(),
       });
 
+      print('Donation successfully added to Firestore');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Thank you for your donation!')),
       );
@@ -54,9 +56,10 @@ class _DonationPageState extends State<DonationPage> {
       _contactController.clear();
       _amountController.clear();
       setState(() {
-        _donationType = null; 
+        _donationType = null;
       });
     } catch (e) {
+      print('Error adding donation to Firestore: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to submit donation: $e')),
       );

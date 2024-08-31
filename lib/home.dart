@@ -1,36 +1,4 @@
-import 'package:citi_smart/pages/account_page.dart';
-import 'package:citi_smart/pages/create_page.dart';
-import 'package:citi_smart/pages/donation_page.dart';
-import 'package:citi_smart/pages/edu_page.dart';
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Citi smart',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-        useMaterial3: true,
-      ),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const HomePage(),
-        '/create': (context) => CreatePage(),
-        '/account': (context) => AccountPage(),
-        '/donation': (context) => DonationPage(),
-        '/edu': (context) => EducationalPage(),
-      },
-    );
-  }
-}
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -99,16 +67,9 @@ class HomePage extends StatelessWidget {
                     content: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        _buildReportCard(
-                          'Water Issues',
-                          Icons.water_damage,
-                          Colors.blue,
-                        ),
-                        _buildReportCard(
-                          'Littering',
-                          Icons.delete_outline,
-                          Colors.green,
-                        ),
+                        _buildReportCard('Water Issues', Icons.water_damage, Colors.blue),
+                        _buildReportCard('Electricity Outages', Icons.power, Colors.yellow),
+                        _buildReportCard('Road Conditions', Icons.traffic, Colors.brown),
                       ],
                     ),
                   ),
@@ -118,21 +79,9 @@ class HomePage extends StatelessWidget {
                     content: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        _buildService(
-                          'Cleaning',
-                          Icons.cleaning_services,
-                          Colors.blue,
-                        ),
-                        _buildService(
-                          'Planting',
-                          Icons.local_florist,
-                          Colors.green,
-                        ),
-                        _buildService(
-                          'Skills Workshop',
-                          Icons.work,
-                          Colors.orange,
-                        ),
+                        _buildService('Tutoring', Icons.school, Colors.grey),
+                        _buildService('Cleaning', Icons.cleaning_services, Colors.blue),
+                        _buildService('Planting', Icons.local_florist, Colors.green),
                       ],
                     ),
                   ),
@@ -140,30 +89,9 @@ class HomePage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      _buildActionButton(
-                        context,
-                        title: 'Educational Page',
-                        icon: Icons.school,
-                        color: Colors.orange,
-                        route: '/edu', // Route name for EducationalPage
-                      ),
-                      _buildActionButton(
-                        context,
-                        title: 'Donations',
-                        icon: Icons.volunteer_activism,
-                        color: Colors.blue,
-                        route: '/donation', //route name for DonationPage
-                      ),
+                      _buildActionButton('Report Issue', 'Municipal problems', Icons.report, Colors.orange),
+                      _buildActionButton('Book Service', 'Home care services', Icons.book, Colors.blue),
                     ],
-                  ),
-          
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(
-                          context, '/impact'); // Navigate to Impact Analysis
-                    },
-                    child: const Text('View Impact Analysis'),
                   ),
                 ],
               ),
@@ -176,6 +104,10 @@ class HomePage extends StatelessWidget {
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.map),
+            label: 'Map',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.create),
@@ -192,30 +124,6 @@ class HomePage extends StatelessWidget {
         ],
         selectedItemColor: Colors.green,
         unselectedItemColor: Colors.grey,
-        onTap: (index) {
-          switch (index) {
-            case 0:
-              // Navigate to Home (if needed)
-              break;
-            case 1:
-              Navigator.pushNamed(context, '/create');
-              break;
-            case 2:
-              Navigator.pushNamed(context, '/social');
-              break;
-            case 3:
-              Navigator.pushNamed(context, '/account');
-              break;
-            case 4:
-              Navigator.pushNamed(context, '/edu');
-              break;
-            case 5:
-              Navigator.pushNamed(context, '/donation');
-              break;
-            default:
-              break;
-          }
-        },
       ),
     );
   }
@@ -240,8 +148,7 @@ class HomePage extends StatelessWidget {
         children: <Widget>[
           Text(
             title,
-            style: const TextStyle(
-                color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+            style: const TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10),
           content,
@@ -250,8 +157,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildUpdateCard(
-      String title, String description, IconData icon, Color iconColor) {
+  Widget _buildUpdateCard(String title, String description, IconData icon, Color iconColor) {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
@@ -276,10 +182,7 @@ class HomePage extends StatelessWidget {
               children: <Widget>[
                 Text(
                   title,
-                  style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold),
+                  style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 5),
                 Text(
@@ -328,42 +231,37 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButton(BuildContext context,
-      {required String title,
-      required IconData icon,
-      required Color color,
-      required String route}) {
+  Widget _buildActionButton(String title, String subtitle, IconData icon, Color color) {
     return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          Navigator.pushNamed(context, route);
-        },
-        child: Container(
-          margin: const EdgeInsets.all(4.0),
-          padding: const EdgeInsets.all(16.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.2),
-                spreadRadius: 2,
-                blurRadius: 5,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
-          child: Column(
-            children: <Widget>[
-              Icon(icon, color: color, size: 40),
-              const SizedBox(height: 10),
-              Text(
-                title,
-                style: const TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
+      child: Container(
+        margin: const EdgeInsets.all(4.0),
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          children: <Widget>[
+            Icon(icon, color: color, size: 40),
+            const SizedBox(height: 10),
+            Text(
+              title,
+              style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 5),
+            Text(
+              subtitle,
+              style: const TextStyle(color: Colors.black54),
+            ),
+          ],
         ),
       ),
     );
