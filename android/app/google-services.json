@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "292478235843",
+    "project_id": "citi-smart-c5927",
+    "storage_bucket": "citi-smart-c5927.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:292478235843:android:4960c6ac3b61dfa24a9e76",
+        "android_client_info": {
+          "package_name": "com.example.citi_smart"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDE34RD-QOhcJVrI3HmXZ6sLefRtUlEq60"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
