@@ -8,13 +8,11 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
-  String _username = 'Kimberly Smith'; // Example username, replace with actual user data
-  String _email = 'kimberly.smith@example.com'; // Example email, replace with actual user data
+  String _username = 'Kimberly Smith';
+  String _email = 'kimberly.smith@example.com';
 
-  // Form key for validating form fields
   final _formKey = GlobalKey<FormState>();
 
-  // Text editing controllers for form fields
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _currentPasswordController = TextEditingController();
@@ -24,14 +22,12 @@ class _AccountPageState extends State<AccountPage> {
   @override
   void initState() {
     super.initState();
-    // Initialize text editing controllers with current user data
     _usernameController.text = _username;
     _emailController.text = _email;
   }
 
   @override
   void dispose() {
-   
     _usernameController.dispose();
     _emailController.dispose();
     _currentPasswordController.dispose();
@@ -42,11 +38,9 @@ class _AccountPageState extends State<AccountPage> {
 
   void _updateProfile() {
     if (_formKey.currentState!.validate()) {
-      
       setState(() {
         _username = _usernameController.text;
         _email = _emailController.text;
-      
       });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -57,7 +51,6 @@ class _AccountPageState extends State<AccountPage> {
     }
   }
 
-  // Method to handle password change
   void _changePassword() {
     if (_currentPasswordController.text.isEmpty ||
         _newPasswordController.text.isEmpty ||
@@ -79,16 +72,12 @@ class _AccountPageState extends State<AccountPage> {
       );
       return;
     }
-    // Perform password change logic here
-    // Example:
-    // AuthService.changePassword(_currentPasswordController.text, _newPasswordController.text);
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Password changed successfully'),
         duration: Duration(seconds: 2),
       ),
     );
-    // Clear password fields after successful change
     _currentPasswordController.clear();
     _newPasswordController.clear();
     _confirmPasswordController.clear();
@@ -99,92 +88,143 @@ class _AccountPageState extends State<AccountPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Account'),
+        backgroundColor: Colors.green,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              TextFormField(
-                controller: _usernameController,
-                decoration: const InputDecoration(labelText: 'Username'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your username';
-                  }
-                  return null;
-                },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            // Profile Header
+            Center(
+              child: Column(
+                children: [
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundImage: AssetImage('assets/profile_picture.png'), // Replace with actual profile picture
+                  ),
+                  const SizedBox(height: 8.0),
+                  Text(
+                    _username,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.green),
+                  ),
+                  Text(
+                    _email,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ],
               ),
-              const SizedBox(height: 16.0),
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(labelText: 'Email'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  // Add email format validation if needed
-                  return null;
-                },
+            ),
+            const SizedBox(height: 16.0),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      TextFormField(
+                        controller: _usernameController,
+                        decoration: InputDecoration(
+                          labelText: 'Username',
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your username';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16.0),
+                      TextFormField(
+                        controller: _emailController,
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16.0),
+                      ElevatedButton(
+                        onPressed: _updateProfile,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          padding: const EdgeInsets.symmetric(vertical: 12.0),
+                        ),
+                        child: const Text('Update Profile'),
+                      ),
+                      const SizedBox(height: 32.0),
+                      const Text(
+                        'Change Password',
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 16.0),
+                      TextFormField(
+                        controller: _currentPasswordController,
+                        decoration: InputDecoration(
+                          labelText: 'Current Password',
+                          border: OutlineInputBorder(),
+                        ),
+                        obscureText: true,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your current password';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16.0),
+                      TextFormField(
+                        controller: _newPasswordController,
+                        decoration: InputDecoration(
+                          labelText: 'New Password',
+                          border: OutlineInputBorder(),
+                        ),
+                        obscureText: true,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter a new password';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16.0),
+                      TextFormField(
+                        controller: _confirmPasswordController,
+                        decoration: InputDecoration(
+                          labelText: 'Confirm Password',
+                          border: OutlineInputBorder(),
+                        ),
+                        obscureText: true,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please confirm your new password';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16.0),
+                      ElevatedButton(
+                        onPressed: _changePassword,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          padding: const EdgeInsets.symmetric(vertical: 12.0),
+                        ),
+                        child: const Text('Change Password'),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              const SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: _updateProfile,
-                child: const Text('Update Profile'),
-              ),
-              const SizedBox(height: 32.0),
-              const Text(
-                'Change Password',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16.0),
-              TextFormField(
-                controller: _currentPasswordController,
-                decoration: const InputDecoration(labelText: 'Current Password'),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your current password';
-                  }
-                 
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16.0),
-              TextFormField(
-                controller: _newPasswordController,
-                decoration: const InputDecoration(labelText: 'New Password'),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a new password';
-                  }
-                  
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16.0),
-              TextFormField(
-                controller: _confirmPasswordController,
-                decoration: const InputDecoration(labelText: 'Confirm Password'),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please confirm your new password';
-                  }
-                  // Add validation logic as needed
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: _changePassword,
-                child: const Text('Change Password'),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -1,218 +1,281 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class Post {
-  final String username; // User who created the post
-  final String text; // Text content of the post
-  final String? imageUrl; // Optional image URL for the post
-  final DateTime timestamp; // Time when the post was created
+  final String id;
+  final String userId;
+  final String text;
+  final String imageUrl;
+  final Timestamp timestamp;
 
   Post({
-    required this.username,
+    required this.id,
+    required this.userId,
     required this.text,
-    this.imageUrl,
+    required this.imageUrl,
     required this.timestamp,
   });
+
+  factory Post.fromDocument(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+    return Post(
+      id: doc.id,
+      userId: data['userId'] ?? '',
+      text: data['text'] ?? '',
+      imageUrl: data['imageUrl'] ?? '',
+      timestamp: data['timestamp'] ?? Timestamp.now(),
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'userId': userId,
+      'text': text,
+      'imageUrl': imageUrl,
+      'timestamp': timestamp,
+    };
+  }
 }
 
 class SocialPage extends StatefulWidget {
-  const SocialPage({Key? key}) : super(key: key);
-
   @override
   _SocialPageState createState() => _SocialPageState();
 }
 
 class _SocialPageState extends State<SocialPage> {
-  final TextEditingController _textEditingController = TextEditingController();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
+  final TextEditingController _textController = TextEditingController();
   File? _imageFile;
-  List<Post> _posts = []; // List to store posts
+  String? _imageUrl; // For web, handle URLs
+  bool _isCreatingPost = false;
+  int _selectedIndex = 3; // Index for Social Feed
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Social'),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            const Text(
-              'Social Feed',
-              style: TextStyle(fontSize: 20),
-            ),
-            const SizedBox(height: 20),
-            _buildSocialPostForm(context),
-            const SizedBox(height: 20),
-            _buildPostsList(), // Display list of posts
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSocialPostForm(BuildContext context) {
-    return Card(
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            const Text(
-              'Create Social Post',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            TextFormField(
-              controller: _textEditingController,
-              maxLines: 3,
-              decoration: const InputDecoration(labelText: 'Write your post'),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please write something';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () {
-                // Implement social post creation logic
-                _createPost(context);
-              },
-              child: const Text('Create Post'),
-            ),
-            const SizedBox(height: 10),
-            _buildPhotoUploadButton(context),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPhotoUploadButton(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        // Implement photo upload logic
-        _uploadPhoto(context);
-      },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: const <Widget>[
-          Icon(Icons.camera_alt),
-          SizedBox(width: 5),
-          Text('Upload Photo'),
-        ],
-      ),
-    );
-  }
-
-  Future<void> _uploadPhoto(BuildContext context) async {
+  Future<void> _pickImage() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       setState(() {
-        _imageFile = File(pickedFile.path);
+        if (kIsWeb) {
+          _imageUrl = pickedFile.path; // Use the path for web
+        } else {
+          _imageFile = File(pickedFile.path);
+        }
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Photo uploaded successfully'),
-          duration: Duration(seconds: 2),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No image selected'),
-          duration: Duration(seconds: 2),
-        ),
-      );
     }
   }
 
-  Widget _buildPhotoPreview() {
-    return _imageFile != null
-        ? kIsWeb
-            ? Image.network(
-                '', // Provide actual URL if available or skip rendering
-                height: 200,
-                width: MediaQuery.of(context).size.width,
-                fit: BoxFit.cover,
-              )
-            : Image.file(
-                _imageFile!,
-                height: 200,
-                width: MediaQuery.of(context).size.width,
-                fit: BoxFit.cover,
-              )
-        : Container();
-  }
+  Future<void> _uploadPost() async {
+    final text = _textController.text;
+    if (text.isEmpty) return;
 
-  void _createPost(BuildContext context) {
-    String postText = _textEditingController.text.trim();
-    if (postText.isNotEmpty || _imageFile != null) {
-      setState(() {
-        _posts.add(Post(
-          username: 'User', // Replace with actual username or user data
-          text: postText,
-          imageUrl: _imageFile != null ? _imageFile!.path : null,
-          timestamp: DateTime.now(),
-        ));
-        _textEditingController.clear();
-        _imageFile = null; // Clear image file after posting
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Social post created successfully'),
-          duration: Duration(seconds: 2),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please write something or upload an image'),
-          duration: Duration(seconds: 2),
-        ),
-      );
+    String imageUrl = '';
+    if (_imageFile != null) {
+      final ref = _storage
+          .ref()
+          .child('post_images/${DateTime.now().toIso8601String()}');
+      final uploadTask = ref.putFile(_imageFile!);
+      final snapshot = await uploadTask.whenComplete(() => {});
+      imageUrl = await snapshot.ref.getDownloadURL();
+    } else if (_imageUrl != null) {
+      imageUrl = _imageUrl!; // Use the URL for web
     }
+
+    final post = Post(
+      id: DateTime.now().toIso8601String(),
+      userId: 'userId', // Replace with actual user ID
+      text: text,
+      imageUrl: imageUrl,
+      timestamp: Timestamp.now(),
+    );
+
+    await _firestore.collection('posts').add(post.toMap());
+
+    setState(() {
+      _isCreatingPost = false;
+      _textController.clear();
+      _imageFile = null;
+      _imageUrl = null; // Clear image URL
+    });
   }
 
-  Widget _buildPostsList() {
-    return Column(
-      children: _posts.map((post) => _buildPostItem(post)).toList(),
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      // Add navigation logic here if needed.
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Community Feed'),
+        backgroundColor: Colors.green,
+      ),
+      body: Column(
+        children: [
+          if (_isCreatingPost) ...[
+            Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  TextField(
+                    controller: _textController,
+                    decoration:
+                        InputDecoration(labelText: 'What\'s on your mind?'),
+                  ),
+                  SizedBox(height: 8.0),
+                  _imageFile != null || _imageUrl != null
+                      ? (kIsWeb
+                          ? Image.network(_imageUrl!,
+                              height: 200, fit: BoxFit.cover) // Use URL for web
+                          : Image.file(_imageFile!,
+                              height: 200,
+                              fit: BoxFit.cover)) // Use file for mobile
+                      : ElevatedButton(
+                          onPressed: _pickImage,
+                          child: Text('Pick an Image'),
+                        ),
+                  SizedBox(height: 16.0),
+                  ElevatedButton(
+                    onPressed: _uploadPost,
+                    child: Text('Post'),
+                    style:
+                        ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  ),
+                ],
+              ),
+            ),
+            Divider(),
+          ],
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: _firestore
+                  .collection('posts')
+                  .orderBy('timestamp', descending: true)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return Center(child: Text('No posts yet.'));
+                }
+
+                final posts = snapshot.data!.docs
+                    .map((doc) => Post.fromDocument(doc))
+                    .toList();
+
+                return ListView.builder(
+                  itemCount: posts.length,
+                  itemBuilder: (context, index) {
+                    final post = posts[index];
+                    return PostTile(post: post);
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(() {
+            _isCreatingPost = !_isCreatingPost;
+          });
+        },
+        child: Icon(_isCreatingPost ? Icons.close : Icons.add),
+        backgroundColor: Colors.green,
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.create),
+            label: 'Create',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.feed),
+            label: 'Social Feed',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle),
+            label: 'Account',
+          ),
+        ],
+        selectedItemColor: Colors.green,
+        unselectedItemColor: Colors.grey,
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              // Navigate to Home (if needed)
+              break;
+            case 1:
+              Navigator.pushNamed(context, '/create');
+              break;
+            case 2:
+              Navigator.pushNamed(context, '/social');
+              break;
+            case 3:
+              Navigator.pushNamed(context, '/account');
+              break;
+            case 4:
+              Navigator.pushNamed(context, '/edu');
+              break;
+            case 5:
+              Navigator.pushNamed(context, '/donation');
+              break;
+            default:
+              break;
+          }
+        },
+      ),
     );
   }
+}
 
-  Widget _buildPostItem(Post post) {
+class PostTile extends StatelessWidget {
+  final Post post;
+
+  PostTile({required this.post});
+
+  @override
+  Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 10.0),
+      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(8.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             Text(
-              post.username,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              post.text,
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 8),
-            Text(post.text),
-            if (post.imageUrl != null) const SizedBox(height: 8),
-            Image.file(
-              File(post.imageUrl!),
-              height: 200,
-              width: MediaQuery.of(context).size.width,
-              fit: BoxFit.cover,
-            ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.0),
+            post.imageUrl.isNotEmpty
+                ? (kIsWeb
+                    ? Image.network(post.imageUrl,
+                        height: 250,
+                        fit: BoxFit.cover) // For web, show bigger image
+                    : Image.network(post.imageUrl,
+                        height: 250,
+                        fit: BoxFit.cover)) // For mobile, show bigger image
+                : SizedBox(),
+            SizedBox(height: 8.0),
             Text(
-              '${post.timestamp}',
-              style: TextStyle(color: Colors.grey),
+              'Posted on: ${post.timestamp.toDate().toString()}',
+              style: TextStyle(color: Colors.grey, fontSize: 12.0),
             ),
           ],
         ),
