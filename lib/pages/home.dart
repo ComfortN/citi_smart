@@ -2,6 +2,7 @@ import 'package:citi_smart/pages/account_page.dart';
 import 'package:citi_smart/pages/create_page.dart';
 import 'package:citi_smart/pages/donation_page.dart';
 import 'package:citi_smart/pages/edu_page.dart';
+import 'package:citi_smart/pages/ServicesPage.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
         '/account': (context) => AccountPage(),
         '/donation': (context) => DonationPage(),
         '/edu': (context) => EducationalPage(),
+        '/services': (context) => ServicesPage(services: []),
       },
     );
   }
@@ -34,6 +36,8 @@ class MyApp extends StatelessWidget {
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
+  
+  get services => null;
 
   @override
   Widget build(BuildContext context) {
@@ -48,17 +52,20 @@ class HomePage extends StatelessWidget {
             Container(
               height: 200,
               color: Colors.lightGreen,
-              child: const Center(
+              child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Icon(Icons.eco, size: 80, color: Colors.white),
+                    Image.asset(
+                      'assets/images/Green Simple Eco Energy Logo1.png', // Replace the Icon with your image
+                      height: 100,
+                    ),
                     SizedBox(height: 10),
-                    Text(
-                      '',
+                    const Text(
+                      'ECOMOBILIZE, CLEAN, EARN, EDUCATE', // Add the desired text if needed
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 24,
+                        fontSize: 12,
                         fontWeight: FontWeight.bold,
                         fontFamily: 'Sansita Swashed',
                       ),
@@ -78,6 +85,7 @@ class HomePage extends StatelessWidget {
                     content: Column(
                       children: <Widget>[
                         _buildUpdateCard(
+                          context,
                           'Citi-Smart Drive',
                           'Join us for a cleanup event this Saturday at the central park.',
                           Icons.cleaning_services,
@@ -85,6 +93,7 @@ class HomePage extends StatelessWidget {
                         ),
                         const SizedBox(height: 10),
                         _buildUpdateCard(
+                          context,
                           'Recycling Workshop',
                           'Learn how to recycle effectively and reduce waste in our workshop.',
                           Icons.recycling,
@@ -156,7 +165,6 @@ class HomePage extends StatelessWidget {
                       ),
                     ],
                   ),
-          
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
@@ -251,8 +259,20 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildUpdateCard(
-      String title, String description, IconData icon, Color iconColor) {
-    return Container(
+    BuildContext context, // Add BuildContext parameter
+    String title, String description, IconData icon, Color iconColor) {
+  return GestureDetector(
+    onTap: () {
+      // Navigate to ServicesPage
+      Navigator.pushNamed(
+        context,
+        '/services',
+        arguments: {
+          'services': services
+        },
+      );
+    },
+    child: Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: Colors.grey[100],
@@ -291,8 +311,10 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   Widget _buildReportCard(String type, IconData icon, Color color) {
     return Column(
